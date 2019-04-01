@@ -1,7 +1,7 @@
 ## Very simple Spring Boot 2 JWT Oauth implementation
 
 Admin credentials: admin/admin
-User credentials: davi/davi123
+<br>User credentials: davi/davi123
 
 Admin token retrieval example
 ```
