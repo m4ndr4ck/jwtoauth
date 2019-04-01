@@ -2,6 +2,12 @@
 
 Admin credentials: admin/admin
 <br>User credentials: davi/davi123
+<br>
+<br>To run just:
+
+```
+mvn spring-boot:run
+```
 
 Admin token retrieval example
 ```
