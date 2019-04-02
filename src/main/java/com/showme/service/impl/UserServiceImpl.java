@@ -1,9 +1,11 @@
 package com.showme.service.impl;
 
+import com.showme.model.Role;
 import com.showme.model.User;
 import com.showme.repository.RoleRepository;
 import com.showme.repository.UserRepository;
 import com.showme.service.UserService;
+import com.showme.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,7 +17,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -28,6 +32,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Override
     public User findByEmail(String email) {
@@ -56,5 +62,22 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 User(user.getEmail(), user.getPassword(), authorities);
 
         return userDetails;
+    }
+
+    @Override
+    public String cadastrar(User user) {
+
+        Set roles = new HashSet<Role>();
+
+        User dbUser = userRepository.findByEmail(user.getEmail());
+        if (dbUser != null) {
+            throw new RuntimeException("User already exist.");
+        }
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        roles.add(roleRepository.findById(1L).get());
+        user.setRoles(roles);
+        userRepository.save(user);
+        return jwtTokenUtil.generateToken(user);
+
     }
 }

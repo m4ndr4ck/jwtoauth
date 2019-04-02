@@ -1,13 +1,11 @@
 package com.showme.controller;
 
+import com.google.gson.Gson;
 import com.showme.model.User;
 import com.showme.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,5 +31,13 @@ public class UserController {
     public @ResponseBody String publicArea(){
         return "Public Area";
     }
+
+    @PostMapping("/cadastrar")
+    public String login(@RequestBody User user){
+        Gson gson = new Gson();
+        String token = gson.toJson(userService.cadastrar(user));
+        return token;
+    }
+
 
 }

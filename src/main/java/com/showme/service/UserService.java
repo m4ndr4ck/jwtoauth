@@ -10,4 +10,6 @@ public interface UserService {
 
     List<User> findAllUsers();
 
+    String cadastrar(User user);
+
 }
