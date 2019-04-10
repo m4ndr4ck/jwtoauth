@@ -1,6 +1,5 @@
 package com.showme.controller;
 
-import com.google.gson.Gson;
 import com.showme.model.User;
 import com.showme.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +35,4 @@ public class UserController {
     public void cadastrar(@RequestBody User user){
         userService.cadastrar(user);
     }
-
-
 }
