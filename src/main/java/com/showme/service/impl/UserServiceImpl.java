@@ -12,6 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordAccessTokenProvider;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
+import org.springframework.security.oauth2.common.AuthenticationScheme;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -68,10 +75,34 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (dbUser != null) {
             throw new RuntimeException("User already exist.");
         }
+        String pass = user.getPassword();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         roles.add(roleRepository.findById(1L).get());
         user.setRoles(roles);
         userRepository.save(user);
+        OAuth2AccessToken token = getToken(user.getEmail(), pass);
+        System.out.println(token);
 
     }
+
+
+    protected OAuth2AccessToken getToken(String username, String password) {
+
+        ResourceOwnerPasswordResourceDetails resource = new ResourceOwnerPasswordResourceDetails();
+
+        resource.setAccessTokenUri("http://localhost:8080/oauth/token");
+        resource.setClientId("showme-client");
+        resource.setClientSecret("showme-secret");
+        resource.setClientAuthenticationScheme(AuthenticationScheme.header);
+        resource.setGrantType("password");
+        resource.setUsername(username);
+        resource.setPassword(password);
+
+        OAuth2RestTemplate rest= new OAuth2RestTemplate(resource, new DefaultOAuth2ClientContext(new DefaultAccessTokenRequest()));
+        rest.setAccessTokenProvider(new ResourceOwnerPasswordAccessTokenProvider());
+        OAuth2AccessToken token= rest.getAccessToken();
+
+        return token;
+    }
+
 }
