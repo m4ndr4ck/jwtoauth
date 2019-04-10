@@ -6,6 +6,7 @@ import com.showme.repository.RoleRepository;
 import com.showme.repository.UserRepository;
 import com.showme.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +29,13 @@ import java.util.Set;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
+
+    @Value("${CLIENT_ID}")
+    String CLIENT_ID;
+
+    @Value("${CLIENT_SECRET}")
+    String CLIENT_SECRET;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -91,8 +99,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         ResourceOwnerPasswordResourceDetails resource = new ResourceOwnerPasswordResourceDetails();
 
         resource.setAccessTokenUri("http://localhost:8080/oauth/token");
-        resource.setClientId("showme-client");
-        resource.setClientSecret("showme-secret");
+        resource.setClientId(CLIENT_ID);
+        resource.setClientSecret(CLIENT_SECRET);
         resource.setClientAuthenticationScheme(AuthenticationScheme.header);
         resource.setGrantType("password");
         resource.setUsername(username);
