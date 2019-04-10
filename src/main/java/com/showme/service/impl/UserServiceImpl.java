@@ -5,7 +5,6 @@ import com.showme.model.User;
 import com.showme.repository.RoleRepository;
 import com.showme.repository.UserRepository;
 import com.showme.service.UserService;
-import com.showme.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,9 +29,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
 
     @Override
     public User findByEmail(String email) {
@@ -65,7 +60,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public String cadastrar(User user) {
+    public void cadastrar(User user) {
 
         Set roles = new HashSet<Role>();
 
@@ -77,7 +72,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         roles.add(roleRepository.findById(1L).get());
         user.setRoles(roles);
         userRepository.save(user);
-        return jwtTokenUtil.generateToken(user);
 
     }
 }

@@ -33,10 +33,8 @@ public class UserController {
     }
 
     @PostMapping("/cadastrar")
-    public String login(@RequestBody User user){
-        Gson gson = new Gson();
-        String token = gson.toJson(userService.cadastrar(user));
-        return token;
+    public void cadastrar(@RequestBody User user){
+        userService.cadastrar(user);
     }
 
 
